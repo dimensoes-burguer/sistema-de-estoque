@@ -5,3 +5,4 @@ nike3,18,180
 nike7,19,200
 mizuno,10,150
 vans,10,190
+NIKEE,10,150
