@@ -2,40 +2,24 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 
-aba_consulta = tk.Tk()
-aba_consulta.title("Sistema de Estoque")
-aba_consulta.geometry("1280x720")
-#aba_consulta.state("zoomed")
+aba_estoque = tk.Tk()
+aba_estoque.title("Sistema de Estoque")
+aba_estoque.geometry("1280x720")
+#aba_estoque.state("zoomed")
 
-aba_consulta.rowconfigure(0, weight=1)
-aba_consulta .columnconfigure(0, weight=1)
+aba_estoque.rowconfigure(0, weight=1)
+aba_estoque .columnconfigure(0, weight=1)
 
-abas = ttk.Notebook(aba_consulta)
+abas = ttk.Notebook(aba_estoque)
 abas.grid(row=0, column=0, sticky="nsew")
 
 #ABAS
-aba_consulta = tk.Frame(abas)
 aba_estoque = tk.Frame(abas)
 aba_cadastro = tk.Frame(abas)
 
 #MENU DE ABAS SUPERIOR
-abas.add(aba_consulta, text="Consulta")
 abas.add(aba_estoque, text="Estoque")
 abas.add(aba_cadastro, text="Cadastro")
-
-#ITENS DA ABA CONSULTA ///ABA CONSULTA
-tk.Label(aba_consulta, text="Bem-vindo ao Sistema de Estoque!", font=("Arial", 24)).grid(row=0, column=1, padx=10, pady=10, sticky="w")
-
-#ITENS DA ABA ESTOQUE ///ABA ESTOQUE
-tk.Label(aba_estoque, text="ESTOQUE", font=("Arial", 15)).grid(row=0, column=1, padx=10, pady=10, sticky="w")
-
-label_excluir = tk.Label(aba_estoque, text="Id do Produto Para Exclusão:")
-label_excluir.grid(row=5, column=0, padx=10, pady=10, sticky="w")
-
-excluir = tk.Entry(aba_estoque)
-excluir.grid(row=5, column=1, padx=10, pady=10)
-
-tk.Button(aba_estoque, text="Excluir produto", command=lambda: [excluir_produto(), excluir.delete(0, tk.END)]).grid(row=5, column=2, padx=20, pady=10)
 
 #DESCRIÇÃO DE CADA INPUT DA ABA CADASTRO ///ABA CADASTRO
 label_nome = tk.Label(aba_cadastro, text="Nome do Produto:")
@@ -108,16 +92,37 @@ def excluir_produto():
                 messagebox.showerror("Erro", "Produto não encontrado.")
             
 
-def buscar_produto():
-    nome = input("\nDigite o nome do produto que deseja buscar: \n")
+def listar_busca():
+    tabela_estoque.delete(*tabela_estoque.get_children())
+
+    nome = buscarNome.get()
+    id_busca = buscarId.get()
+    encontrado = False
+
     with open(r"C:\Users\luizl\Documents\Estudos\Sistema de Estoque\estoque.txt", "r") as estoque:
         for linha in estoque:
             produto = linha.strip().split(",")
-            if produto[0] == nome:
-                print(f"Produto encontrado: {produto[0]}, Quantidade: {produto[1]}, Preço: {produto[2]}")
-                return
-    print("\nProduto não encontrado.\n")
 
+            if len(produto) >= 4:
+                if nome == produto[1] or id_busca == produto[0]:
+                    encontrado = True
+
+                    tabela_estoque.insert(
+                        "",
+                        "end",
+                        values=(
+                            produto[0],
+                            produto[1],
+                            produto[2],
+                            produto[3]
+                        )
+                    )
+
+    if not encontrado:
+        messagebox.showerror("Erro", "Produto não encontrado.")
+        listar_produtos()
+
+#TABELA E ITENS DO ESTOQUE
 frame_lista_estoque = tk.Frame(aba_estoque)
 frame_lista_estoque.grid(row=5, column=6, padx=10, pady=10, sticky="w")
 
@@ -132,12 +137,45 @@ tabela_estoque.heading("produto", text="Produto")
 tabela_estoque.heading("quantidade", text="Quantidade")
 tabela_estoque.heading("preco", text="Preço")
 
-tabela_estoque.column("Id", width=120)
-tabela_estoque.column("produto", width=250)
+tabela_estoque.column("Id", width=120, anchor="center")
+tabela_estoque.column("produto", width=250, anchor="center")
 tabela_estoque.column("quantidade", width=200, minwidth=200, anchor="center")
-tabela_estoque.column("preco", width=120)
+tabela_estoque.column("preco", width=120, anchor="center")
 
-tabela_estoque.grid(row=5, column=6, padx=20, pady=20, sticky="nsew")
+tabela_estoque.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
+
+#FRAME PRA DEIXAR INPU E LABEL NA MESMA COLUNA DA TABELA
+frame_lado = tk.Frame(aba_estoque)
+frame_lado.grid(row=2, column=1, padx=30, sticky="ns")
+frame_cima = tk.Frame(aba_estoque)
+frame_cima.grid(row=0, column=0, padx=5, sticky="w")
+
+frame_controles = tk.Frame(frame_lado)
+frame_controles.grid(row=4, column=0)
+
+# Label um pouco acima do input
+label_busca = tk.Label(frame_cima, text="Buscar produto:", font=("Arial", 12))
+label_busca.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+#BOTAO E INPUT DE BUSCA ITEM
+buscarNome = tk.Entry(frame_cima)
+buscarNome.grid(row=1, column=1, padx=10, pady=0)
+buscarId = tk.Entry(frame_cima)
+buscarId.grid(row=1, column=2, padx=10, pady=0)
+tk.Button(frame_cima, text="Buscar", command=lambda: [listar_busca(), buscarId.delete(0, tk.END), buscarNome.delete(0, tk.END)]).grid(row=1, column=3, padx=10, pady=0)
+tk.Button(frame_cima, text="Mostrar Todos", command=lambda: [listar_produtos(), buscarId.delete(0, tk.END), buscarNome.delete(0, tk.END)]).grid(row=1, column=4, padx=10, pady=0)
+tk.Label(frame_cima, text="ID", font=("Arial", 10)).grid(row=2, column=2, padx=(1,0), pady=0)
+tk.Label(frame_cima, text="Nome", font=("Arial", 10)).grid(row=2, column=1, padx=(1,0), pady=0)
+
+tk.Label(frame_cima, text="ESTOQUE", font=("Arial", 30, "bold")).grid(row=0, column=5, padx=(50,0), pady=10)
+
+label_excluir = tk.Label(frame_lado, text="Id do Produto Para Exclusão:")
+label_excluir.grid(row=2, column=2, padx=10, pady=10, sticky="w")
+
+#BOTAO E INPUT PRA EXCLUIR ITEM
+excluir = tk.Entry(frame_lado)
+excluir.grid(row=3, column=2, padx=10, pady=10)
+tk.Button(frame_lado, text="Excluir produto", command=lambda: [excluir_produto(), excluir.delete(0, tk.END)]).grid(row=4, column=2, padx=10, pady=10)
 
 def listar_produtos():
     tabela_estoque.delete(*tabela_estoque.get_children())
@@ -157,9 +195,6 @@ def listar_produtos():
                         produto[3]
                     )
                 )
-
-    tabela_estoque.after(1000, listar_produtos)
-
 listar_produtos()
-    
-aba_consulta.mainloop()
+
+aba_estoque.mainloop()
