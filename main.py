@@ -98,7 +98,6 @@ def listar_busca():
     nome = buscarNome.get()
     id_busca = buscarId.get()
     encontrado = False
-
     with open(r"C:\Users\luizl\Documents\Estudos\Sistema de Estoque\estoque.txt", "r") as estoque:
         for linha in estoque:
             produto = linha.strip().split(",")
