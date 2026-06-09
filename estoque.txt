@@ -1,8 +1,9 @@
-nike,5,120
-nike2,10,120
-nike2,10,150
-nike3,18,180
-nike7,19,200
-mizuno,10,150
-vans,10,190
-NIKEE,10,150
+0,nike,5,120
+2,nike2,10,150
+3,nike3,18,180
+4,nike7,19,200
+5,mizuno,10,150
+6,vans,10,190
+7,NIKEE,10,150
+8,ALLSTAR,10,110
+9,Nike Shock,12,150
