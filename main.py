@@ -136,7 +136,7 @@ tabela_estoque.heading("Id", text="Id")
 tabela_estoque.heading("produto", text="Produto")
 tabela_estoque.heading("quantidade", text="Quantidade")
 tabela_estoque.heading("preco", text="Preço")
-##
+
 tabela_estoque.column("Id", width=120, anchor="center")
 tabela_estoque.column("produto", width=250, anchor="center")
 tabela_estoque.column("quantidade", width=200, minwidth=200, anchor="center")
